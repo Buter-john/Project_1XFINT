@@ -1,25 +1,24 @@
-const { cookies } = require('next/headers');
+export const AUTH_COOKIE_NAME = "authToken";
+const MAX_AGE_SECONDS = 60 * 60 * 10; // aligné sur l'expiration du JWT (10h)
 
-async function setAuthCookie(token) {
-    const cookiesStore = await cookies();
-    cookieStore.set('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 8, // 8h en secondes
-        path: '/',
-
-    });
+export function setAuthCookie(response, token) {
+  response.cookies.set(AUTH_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: MAX_AGE_SECONDS,
+  });
+  return response;
 }
 
-async function getAuthCookie() {
-    const cookieStore = await cookies();
-    return cookieStore.get('token')?.value;
+export function clearAuthCookie(response) {
+  response.cookies.set(AUTH_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+  return response;
 }
-
-async function clearAuthCookie() {
-    const cookieStore = await cookies();
-    cookieStore.delete('token');
-}
-
-module.exports = { setAuthCookie, getAuthCookie, clearAuthCookie };
