@@ -7,6 +7,7 @@ function generateToken(user) {
     id: user.id,
     email: user.email,
     role: user.role,
+    firstLogin: user.firstLogin
   };
 
   const token = jwt.sign(payload, JWT_SECRET, {
