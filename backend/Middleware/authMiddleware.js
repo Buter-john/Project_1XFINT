@@ -2,8 +2,8 @@ import { verifyToken } from "../Utils/JwtUtils";
 import { AUTH_COOKIE_NAME } from "../Utils/authCookie";
 
 export function authenticateToken(req){
-    const authHearder = req.hearders.get("authorization");
-    const token = authHearder.split(' ')[1]
+    const authHeader = req.headers.get("authorization");
+    const token = authHeader?.split(" ")[1] || req.cookies?.get(AUTH_COOKIE_NAME)?.value;
 
     if (!token){
         return {isAuthenticated: false, error: "Token required"}
