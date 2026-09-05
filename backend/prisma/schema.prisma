@@ -17,11 +17,30 @@ enum Role {
 }
 
 model users {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
+  id              Int           @id @default(autoincrement())
+  email           String        @unique
   password        String
   role            Role
-  firstConnection Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  firstConnection Boolean       @default(true)
+  notesFrais      NoteDeFrais[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model NoteDeFrais {
+  id             Int      @id @default(autoincrement())
+  titre          String
+  commentaire    String
+  statut         Statut   @default(CREEE)
+  dateSoumission DateTime @default(now())
+  fichiers       String
+  user           users    @relation(fields: [userId], references: [id])
+  userId         Int
+}
+
+enum Statut {
+  CREEE
+  VALIDEE
+  REFUSEE
+  TRAITEE
 }
