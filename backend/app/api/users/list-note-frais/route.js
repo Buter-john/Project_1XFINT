@@ -19,8 +19,16 @@ export async function GET(req) {
       return jsonResponse({ error: "Unauthorized role" }, 403);
     }
 
+    const { searchParams } = new URL(req.url);
+    const onlyMine = searchParams.get("mine") === "true";
+
     let notesDeFrais;
-    if (role === "MANAGER") {
+    if (onlyMine) {
+      notesDeFrais = await prisma.noteDeFrais.findMany({
+        where: { userId },
+        orderBy: { dateSoumission: "desc" },
+      });
+    } else if (role === "MANAGER") {
       notesDeFrais = await prisma.noteDeFrais.findMany({
         orderBy: { dateSoumission: "desc" },
         include: { user: { select: { email: true, role: true } } },
@@ -39,7 +47,7 @@ export async function GET(req) {
       });
     }
 
-    return jsonResponse({ note_de_frais: notesDeFrais, role });
+    return jsonResponse({ note_de_frais: notesDeFrais, role, mine: onlyMine });
   } catch (error) {
     return jsonResponse(
       { error: "Erreur lors de la récupération des notes de frais", details: errorDetails(error) },
