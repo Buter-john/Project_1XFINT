@@ -5,12 +5,6 @@ import { jsonResponse, corsPreflightResponse } from "../../../../Middleware/Cors
 import { authenticateToken } from "../../../../Middleware/authMiddleware";
 import { errorDetails } from "../../../../Utils/errorDetails";
 
-export const config = {
-    api: {
-        bodyParser: false, 
-    },
-};
-
 export async function OPTIONS() {
     return corsPreflightResponse("POST, OPTIONS");
 }
