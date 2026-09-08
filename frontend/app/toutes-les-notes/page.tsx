@@ -3,12 +3,12 @@
 import ListeNotesFrais from "../component/ListeNotesFrais";
 import Barrelayout from "../component/Barrelayout";
 
-const Mesnote = () => {
+const ToutesLesNotes = () => {
   return (
     <Barrelayout>
-      <ListeNotesFrais mine />
+      <ListeNotesFrais />
     </Barrelayout>
   );
 };
 
-export default Mesnote;
+export default ToutesLesNotes;

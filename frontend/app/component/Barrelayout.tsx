@@ -42,6 +42,7 @@ export default function Barrelayout({ children }: { children: React.ReactNode })
   }, []);
 
   const isManager = user?.role === "manager";
+  const isComptabilite = user?.role === "comptabilite";
 
   const handleLogout = async () => {
     try {
@@ -57,11 +58,10 @@ export default function Barrelayout({ children }: { children: React.ReactNode })
   const navLink = (href: string, label: string) => (
     <Link
       href={href}
-      className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors ${
-        pathname === href
+      className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors ${pathname === href
           ? "bg-blue-50 text-blue-700"
           : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-      }`}
+        }`}
     >
       {label}
     </Link>
@@ -76,6 +76,12 @@ export default function Barrelayout({ children }: { children: React.ReactNode })
         </Link>
         <nav className="flex items-center gap-1">
           {navLink("/home", "Accueil")}
+          {navLink("/mesnotes", "Mes notes")}
+
+          {!loading && (isManager || isComptabilite) && (
+            navLink("/toutes-les-notes", "Toutes les notes")
+          )}
+
           {navLink("/profil", "Mon profil")}
 
           {!loading && isManager && (

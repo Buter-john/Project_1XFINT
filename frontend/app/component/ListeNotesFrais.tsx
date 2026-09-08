@@ -10,14 +10,18 @@ type NoteDeFrais = {
   statut: "CREEE" | "VALIDEE" | "REFUSEE" | "TRAITEE";
   dateSoumission: string;
   commentaire: string;
-  fichiers: string; // JSON.stringify([...])
+  fichiers: string; 
   user?: {
     email: string;
     role: string;
   };
 };
 
-export default function ListeNoteFrais() {
+interface ListeNoteFraisProps {
+  mine?: boolean;
+}
+
+export default function ListeNoteFrais({ mine = false }: ListeNoteFraisProps = {}) {
   const [notes, setNotes] = useState<NoteDeFrais[]>([]);
   const [selectedNote, setSelectedNote] = useState<NoteDeFrais | null>(null);
   const [role, setRole] = useState<string>("");
@@ -27,7 +31,10 @@ export default function ListeNoteFrais() {
   useEffect(() => {
     async function fetchNotes() {
       try {
-        const res = await fetch(`${API_URL}/api/users/list-note-frais`, {
+        const url = mine
+          ? `${API_URL}/api/users/list-note-frais?mine=true`
+          : `${API_URL}/api/users/list-note-frais`;
+        const res = await fetch(url, {
           credentials: "include",
         });
         const data = await res.json();
@@ -42,7 +49,7 @@ export default function ListeNoteFrais() {
       }
     }
     fetchNotes();
-  }, []);
+  }, [mine]);
 
   const updateStatut = async (id: number, newStatut: NoteDeFrais["statut"]) => {
     setLoadingAction(true);
@@ -93,6 +100,11 @@ export default function ListeNoteFrais() {
   };
 
   const renderActionsForRole = (note: NoteDeFrais) => {
+    // Vue personnelle : on ne valide jamais ses propres notes
+    if (mine) {
+      return <span className="text-slate-300">—</span>;
+    }
+
     // Manager : agit une fois sur CREEE -> VALIDEE ou REFUSEE
     if (role === "MANAGER" && note.statut === "CREEE") {
       return (
@@ -131,11 +143,14 @@ export default function ListeNoteFrais() {
     // Sinon pas d'action possible
     return <span className="text-slate-300">—</span>;
   };
+   const showEmailColumn = !mine && ["MANAGER", "COMPTABILITE"].includes(role);
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Notes de frais</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">
+          {mine ? "Mes notes de frais" : "Notes de frais"}
+        </h1>
         {role && (
           <span className="text-sm text-slate-500">
             Connecté en tant que <span className="font-medium text-slate-700">{role}</span>
@@ -149,7 +164,7 @@ export default function ListeNoteFrais() {
             <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
               <tr>
                 <th className="p-3 text-left font-medium">Titre</th>
-                {["MANAGER", "COMPTABILITE"].includes(role) && (
+                {showEmailColumn && (
                   <th className="p-3 text-left font-medium">Email</th>
                 )}
                 <th className="p-3 text-left font-medium">Statut</th>
@@ -161,7 +176,7 @@ export default function ListeNoteFrais() {
               {notes.map((note) => (
                 <tr key={note.id} className="hover:bg-slate-50">
                   <td className="p-3 text-slate-900">{note.titre}</td>
-                  {["MANAGER", "COMPTABILITE"].includes(role) && (
+                  {showEmailColumn && (
                     <td className="p-3 text-slate-600">{note.user?.email || "—"}</td>
                   )}
                   <td className="p-3">{statusBadge(note.statut)}</td>
