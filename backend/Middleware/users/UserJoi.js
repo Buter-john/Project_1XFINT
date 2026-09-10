@@ -35,7 +35,7 @@ export function validateLogin(data) {
 
 export function validateRegister(data) {
   const schema = Joi.object({
-    email: Joi.string().email().required(),
+    email: Joi.string().email().pattern(/@supherman\.com$/).required(),
     password: Joi.string().min(8).required(),
     role: Joi.string().valid("EMPLOYE", "MANAGER", "COMPTABILITE").required().messages({
       "any.only": "Le rôle est invalide",
@@ -52,6 +52,8 @@ export function validateRegister(data) {
           message = "Email nécessaire";
         } else if (error.details[0].type === "string.email") {
           message = "Email incorrect";
+        } else if (error.details[0].type === "string.pattern.base") {
+          message = "L'email doit se terminer par @supherman.com";
         }
         break;
       case "password":
