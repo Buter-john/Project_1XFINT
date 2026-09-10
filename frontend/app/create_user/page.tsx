@@ -18,6 +18,11 @@ const CreateUserForm = () => {
     setMessage("");
     setError("");
 
+      if (!email.endsWith("@supherman.com")) {
+      setError("L'adresse email doit se terminer par @supherman.com");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("email", email);
