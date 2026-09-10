@@ -33,10 +33,6 @@ export async function POST(request) {
             );
         }
 
-        if (!email || !email.endsWith("@supherman.com")) {
-            return jsonResponse({ error: "L'adresse email doit se terminer par @supherman.com" }, 400);
-        }
-
         const validate = validateRegister({ email, password, role });
         if (!validate.statut) {
             return jsonResponse({ error: validate.message }, validate.code);
