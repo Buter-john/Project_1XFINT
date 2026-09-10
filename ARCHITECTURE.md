@@ -92,6 +92,7 @@ Plusieurs mécanismes de protection sont en place :
 
 - **CORS restreint** (`Middleware/CorsMiddleware.js`) : seule l'origine définie dans `ALLOWED_ORIGIN` (le frontend) a le droit d'appeler l'API
 - **Rate limiting sur le login** (`Utils/rateLimit.js`) : 5 tentatives maximum par IP toutes les 15 minutes, pour limiter le brute-force. Stocké en mémoire (une simple `Map`), donc réinitialisé si le serveur redémarre - suffisant pour un projet de cette taille, pas pour de la production à grande échelle
+- **Email restreint à un domaine** (`Middleware/users/UserJoi.js` et `create_user/page.tsx`) : la création d'un compte exige un email se terminant par `@supherman.com`, vérifié à deux endroits - côté frontend (retour immédiat, sans appel réseau inutile) et côté backend (la vraie protection, contre un appel direct à l'API avec un autre domaine)
 - **Validation des données avec Joi** (`Middleware/users/UserJoi.js`) : chaque formulaire (login, création de compte, note de frais) est validé côté serveur avant tout traitement, même si le frontend valide déjà côté client (jamais faire confiance uniquement au frontend)
 - **Upload de fichiers sécurisé** (`app/api/users/note-frais/route.js` et `app/api/users/files/[filename]/route.js`) :
   - liste blanche de types MIME acceptés (PNG, JPEG, WEBP, PDF)
