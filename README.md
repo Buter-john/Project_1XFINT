@@ -2,6 +2,11 @@
 
 Application web qui permet aux employés de soumettre des notes de frais (avec justificatif), et aux managers/comptabilité de les valider ou les refuser.
 
+Voir aussi :
+- [Dépôt GitHub](https://github.com/Buter-john/Project_1XFINT)
+- [MANUEL_UTILISATION.md](./MANUEL_UTILISATION.md) — comment utiliser l'application (par rôle)
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — documentation technique 
+
 Projet composé de deux applications séparées :
 - **backend/** : API (Next.js, routes API uniquement, pas d'interface)
 - **frontend/** : interface utilisateur (Next.js + React + Tailwind CSS)
